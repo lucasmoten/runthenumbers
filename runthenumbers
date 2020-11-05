@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Every N Blocks, we run the numbers
+NBLOCK=5
+SLEEPSECONDS=5
+
+# Report to the output in journalctl
+logger "Run The Numbers will report the results of gettxoutsetinfo every ${NBLOCK} blocks"
+# Initialize when last run and block last seen. 
+last_run_block=-1
+last_seen_block=-1
+# Run continuously
+while true
+do
+    # Get the current block, using the bitcoin-cli wrapper.
+    current_block=$(bitcoin-cli getblockcount)
+    # Just converts from a string to a number
+    current_block=$(expr $current_block + 1 - 1)
+    # Computes modulus of block number over our N block configured value
+    mod_block=$(expr $current_block % $NBLOCK)
+    # Log the block seen if whether we are about to run the numbers
+    if [[ $current_block -gt $last_seen_block ]]; then
+        last_seen_block=$current_block
+        if [[ $mod_block -eq "0" ]]; then
+            logger "Run The Numbers saw block $last_seen_block. RUNNING THE NUMBERS !!!"
+        else
+            logger "Run The Numbers saw block $last_seen_block."
+        fi
+    fi
+    # Determine if we should run the numbers
+    if [[ $mod_block -eq "0" ]]; then
+        # Only one the numbers once per block
+        if [[ $current_block -gt $last_run_block ]]; then
+            # Update last run block
+            last_run_block=$current_block
+            # Run the numbers
+            txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
+            # Save results to files
+            echo "${txoutsetinfo}" > "/home/bitcoin/.runthenumbers/the_numbers_${current_block}.txt"
+            echo "${txoutsetinfo}" > "/home/bitcoin/.runthenumbers/the_numbers_latest.txt"
+            # Capture height and total supply
+            rtnheight=$(cat /home/bitcoin/.runthenumbers/the_numbers_latest.txt|jq '.height')
+            rtnamount=$(cat /home/bitcoin/.runthenumbers/the_numbers_latest.txt|jq '.total_amount')
+            # Assemble a message and log it
+            rtnmessage=$(echo "Run The Numbers reports total BTC supply of ${rtnamount} as of block ${rtnheight}")
+            logger "${rtnmessage}"
+        fi
+    fi
+    # Query block height every n seconds
+    sleep $SLEEPSECONDS
+done

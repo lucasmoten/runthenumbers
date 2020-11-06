@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Every N Blocks, we run the numbers
-NBLOCK=5
+NBLOCK=5000
 SLEEPSECONDS=5
 
 # Output path

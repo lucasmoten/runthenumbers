@@ -4,9 +4,10 @@ Based on BashCo's [RunTheNumbers](https://github.com/BashCo/RunTheNumbers) scrip
 
 Run The Numbers is part of a synchronized decentralized audit of the Bitcoin supply.  A target block height is agreed upon whereby many participants will simultaneously run a similar script on their node.  This version is setup to automatically run as a service, and by default, run the numbers every 5000 blocks, or about once every 34 to 35 days based on a target of 10 minute block times.  Results are saved in the /home/bitcoin/.runthenumbers folder. Instructions for reviewing the results are also outlined below.
 
-Originally this was submitted as a pull request to Stadicus Raspibolt. In the interest of sharing this more widely, I decided to pull it back for enhancements and in a more self contained package to easily allow it to be fitted into other Bitcoin nodes.
+Originally this was submitted as a pull request to [Stadicus Raspibolt](https://github.com/stadicus/RaspiBolt/). In the interest of sharing this more widely, I decided to pull it back for enhancements and in a more self contained package to easily allow it to be fitted into other Bitcoin nodes.
 
 Jump to Section
+* [Requirements](#requirements)
 * [Clone this repo](#clone-this-repo)
 * [Review and Configure Script](#review-and-configure-script)
 * [Run the Numbers Script](#run-the-numbers-script)
@@ -15,6 +16,18 @@ Jump to Section
 * [Web Server](#web-server)
 
 ---
+
+## Requirements
+
+* You should have a fully synched bitcoin node.  
+
+  If you haven't done this yet, take a gander at the [Bitcoin Node Guide](http://node.guide/) by [Bitcoin Q+A](https://twitter.com/BitcoinQ_A) for a fairly comprehensive explanation of nodes and some common options available.
+
+* Be familiar with the command line.
+
+  While commands are provided below, you should have an understanding of what is happening.  If in doubt, ask, and research.  This guide is based on an installation on a Raspberry Pi using Raspbian.  If your node is running on another platform, you may need to make adjustments.
+
+* Your node should already have `git`, `jq`, and `nginx` installed and available. 
 
 ## Clone this repo
 

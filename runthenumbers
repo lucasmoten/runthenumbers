@@ -4,6 +4,8 @@
 NBLOCK=5
 SLEEPSECONDS=5
 
+# Output path
+OUTPATH="/home/bitcoin/.runthenumbers/"
 # Report to the output in journalctl
 logger "Run The Numbers will report the results of gettxoutsetinfo every ${NBLOCK} blocks"
 # Initialize when last run and block last seen. 
@@ -36,14 +38,33 @@ do
             # Run the numbers
             txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
             # Save results to files
-            echo "${txoutsetinfo}" > "/home/bitcoin/.runthenumbers/the_numbers_${current_block}.txt"
-            echo "${txoutsetinfo}" > "/home/bitcoin/.runthenumbers/the_numbers_latest.txt"
+            echo "${txoutsetinfo}" > "${OUTPATH}the_numbers_${current_block}.txt"
+            echo "${txoutsetinfo}" > "${OUTPATH}the_numbers_latest.txt"
             # Capture height and total supply
-            rtnheight=$(cat /home/bitcoin/.runthenumbers/the_numbers_latest.txt|jq '.height')
-            rtnamount=$(cat /home/bitcoin/.runthenumbers/the_numbers_latest.txt|jq '.total_amount')
+            rtnheight=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.height')
+            rtnamount=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.total_amount')
+            rtnbestblock=$(cat ${OUTPATH}the_numbers_latest.txt|jq -r '.bestblock')
+            rtntransactions=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.transactions')
+            rtntxouts=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.txouts')
             # Assemble a message and log it
             rtnmessage=$(echo "Run The Numbers reports total BTC supply of ${rtnamount} as of block ${rtnheight}")
             logger "${rtnmessage}"
+            # HTML output
+            echo "<!DOCTYPE html>" > ${OUTPATH}the_numbers_latest.htm
+            echo "<html><head><title>Run the Numbers!</title></head><body style='font-family:ubuntu;font-weight:bold;font-style:italic;color:#4d4d4e'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<center>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<h1>Run The Numbers last ran at block ${rtnheight}</h1>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<table style='width:800px;border:1px solid;font-family:ubuntu;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<tr><td title='The hash of the block up to which the UTXO is accurate'>Best Block</td><td>${rtnbestblock}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<tr><td title='The number of transactions that have at least one non-spent output'>Transactions</td><td>${rtntransactions}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<tr><td title='The number of unspent outputs'>TX Outs</td><td>${rtntxouts}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<tr><td title='The value in BTC of all unspent outputs added together. The issued supply.'>Total Amount</td><td>${rtnamount}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</table>" >> ${OUTPATH}the_numbers_latest.htm
+            dt=$(date)
+            echo "<p>${dt}</p>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</center>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</body></html>" >> ${OUTPATH}the_numbers_latest.htm
+            chmod a+r ${OUTPATH}the_numbers_latest.htm
         fi
     fi
     # Query block height every n seconds

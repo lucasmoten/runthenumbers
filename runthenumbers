@@ -54,7 +54,7 @@ do
             echo "<html><head><title>Run the Numbers!</title></head><body style='font-family:ubuntu;font-weight:bold;font-style:italic;color:#4d4d4e'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<center>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<h1>Run The Numbers last ran at block ${rtnheight}</h1>" >> ${OUTPATH}the_numbers_latest.htm
-            echo "<table style='width:800px;border:1px solid;font-family:ubuntu;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<table style='width:800px;border:1px solid;font-family:ubuntu;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;background-color:#f2a900'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The hash of the block up to which the UTXO is accurate'>Best Block</td><td>${rtnbestblock}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of transactions that have at least one non-spent output'>Transactions</td><td>${rtntransactions}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of unspent outputs'>TX Outs</td><td>${rtntxouts}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm

@@ -45,8 +45,6 @@ do
     if [[ $mod_block -eq "0" ]]; then
         # Only one the numbers once per block
         if [[ $current_block -gt $last_run_block ]]; then
-            # Update last run block
-            last_run_block=$current_block
             # Run the numbers
             txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
             # Save results to files
@@ -65,10 +63,20 @@ do
             logger "${rtnmessage}"
             # HTML output
             echo "<!DOCTYPE html>" > ${OUTPATH}the_numbers_latest.htm
-            echo "<html><head><title>Run the Numbers!</title></head><body style='font-family:ubuntu,lucida,roboto,sans-serif,helvetica,arial;font-weight:bold;font-style:italic;color:#4d4d4e'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<html><head><title>Run the Numbers!</title>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<style>" >> ${OUTPATH}the_numbers_latest.htm
+            echo ".orangebg {background-color:#f2a900}" >> ${OUTPATH}the_numbers_latest.htm
+            echo ".greytext {font-family:ubuntu,lucida,roboto,sans-serif,helvetica,arial;font-weight:bold;font-style:italic;color:#4d4d4e;}" >> ${OUTPATH}the_numbers_latest.htm
+            echo ".nav {cursor:pointer;}" >> ${OUTPATH}the_numbers_latest.htm
+            echo ".hidden {display:none;}" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</style>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<script language='javascript'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "function showresults(n) {location.href='the_numbers_' + n + '.htm';}" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</script>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "</head><body class='greytext'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<center>" >> ${OUTPATH}the_numbers_latest.htm
-            echo "<h1>Run The Numbers last ran at block ${rtnheight}</h1>" >> ${OUTPATH}the_numbers_latest.htm
-            echo "<table style='width:800px;border:1px solid;font-family:ubuntu,lucida,roboto,sans-serif,helvetica,arial;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;background-color:#f2a900'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<h1>Run The Numbers results from block ${rtnheight}</h1>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<table class='greytext orangebg' style='width:800px;border:1px solid;padding:10px;border-spacing:25px;'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The hash of the block up to which the UTXO is accurate'>Best Block</td><td>${rtnbestblock}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of transactions that have at least one non-spent output'>Transactions</td><td>${rtntransactions}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of unspent outputs'>TX Outs</td><td>${rtntxouts}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
@@ -76,6 +84,18 @@ do
             echo "</table>" >> ${OUTPATH}the_numbers_latest.htm
             dt=$(date)
             echo "<p>${dt}</p>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<p>" >> ${OUTPATH}the_numbers_latest.htm
+            # manipulate links if this isn't the first time we've run
+            if [[ last_run_block -gt -1 ]]; then
+                # add previous block nav to the current file
+                echo "<span class='nav orangebg greytext' onclick='showresults(${last_run_block})'>&nbsp;&#11207; ${last_run_block} &nbsp;</span> &nbsp;&nbsp;&nbsp; " >> ${OUTPATH}the_numbers_latest.htm
+                # set the next block nav on the last run block file
+                sed -i 's/greytext hidden/greytext/g' ${OUTPATH}the_numbers_${last_run_block}.htm
+                sed -i 's/NEXTRUNBLOCK/'"${current_block}"'/g' ${OUTPATH}the_numbers_${last_run_block}.htm
+            fi
+            # add a hidden placeholder link for the next block that gets run
+            echo "<span class='nav orangebg greytext hidden' onclick='showresults(NEXTRUNBLOCK)'>&nbsp; NEXTRUNBLOCK &#11208;&nbsp;</span> &nbsp;&nbsp;&nbsp; " >> ${OUTPATH}the_numbers_latest.htm
+            echo "</p>" >> ${OUTPATH}the_numbers_latest.htm
             echo "</center>" >> ${OUTPATH}the_numbers_latest.htm
             echo "</body></html>" >> ${OUTPATH}the_numbers_latest.htm
             chmod a+r ${OUTPATH}the_numbers_latest.htm
@@ -91,6 +111,8 @@ do
                 curl -s ${bcmp} ${bcao}5/....BLO/...${rtnheight:0:3} || true
                 curl -s ${bcmp} ${bcao}6/CK...../${rtnheight:3:3}... || true
             fi
+            # Update last run block
+            last_run_block=$current_block
         fi
     fi
     # Query block height every n seconds

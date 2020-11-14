@@ -181,7 +181,7 @@ This setup assumes that you are using a previously setup NGINX, but can be easil
     }
   }
   ```
-  This listens on port 1839 and serves up the files in the runthenumbers folder with a default file to be returned when requesting the directory.  Alternatively, you could use other ports such as 1212, 1515, and 1743.
+  This listens on port [1839](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L1839) and serves up the files in the runthenumbers folder with a default file to be returned when requesting the directory.  Alternatively, you could use other ports such as [1212](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L1212), [1515](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L1515), and [1743](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt#L1743). 
 
 * Enable the port on the firewall
 
@@ -219,3 +219,6 @@ This setup assumes that you are using a previously setup NGINX, but can be easil
 
   ![](runthenumbers.png)
 
+  After multiple runs navigation elements will allow for easily moving between your results
+
+  ![](runthenumbers-nav.png)

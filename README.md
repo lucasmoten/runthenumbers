@@ -57,6 +57,23 @@ Jump to Section
 
   Maybe you want this to run more often. Personally I go with every 5 blocks.
 
+  ```ini
+  BLOCKCLOCK=0
+  BLOCKCLOCKADDR="21.21.21.21"
+  BLOCKCLOCKPASSWORD=""
+  ```
+
+  If you have a [blockclock mini](https://blockclockmini.com/) on your network, you can enable pushing results of running the numbers.
+
+  For the BLOCKCLOCK variable, a value of 1 will enable this feature.
+
+  Give the IP address of your blockclock mini for the BLOCKCLOCKADDR variable.
+
+  Only specify a value for BLOCKCLOCKPASSWORD if you configured a password for the device.
+
+  ![](runthenumbers-bc.jpg)
+  
+
 * Save and exit the file
 
 ## Run the Numbers Script
@@ -201,3 +218,4 @@ This setup assumes that you are using a previously setup NGINX, but can be easil
   Once the numbers have been run at least once, you should get a formatted display that looks similar to this
 
   ![](runthenumbers.png)
+

@@ -4,6 +4,18 @@
 NBLOCK=5000
 SLEEPSECONDS=5
 
+# BLOCKCLOCK mini
+BLOCKCLOCK=0
+BLOCKCLOCKADDR="21.21.21.21"
+BLOCKCLOCKPASSWORD=""
+
+# Determine base uri for blockclock api
+bcmp=""
+if [[ -n $BLOCKCLOCKPASSWORD ]]; then
+    bcmp = " --digest -u :${BLOCKCLOCKPASSWORD} "
+fi
+bcai="http://${BLOCKCLOCKADDR}/api/image/4/register"
+bcao="http://${BLOCKCLOCKADDR}/api/ou_text/"
 # Output path
 OUTPATH="/home/bitcoin/.runthenumbers/"
 # Report to the output in journalctl
@@ -40,21 +52,23 @@ do
             # Save results to files
             echo "${txoutsetinfo}" > "${OUTPATH}the_numbers_${current_block}.txt"
             echo "${txoutsetinfo}" > "${OUTPATH}the_numbers_latest.txt"
+            chmod a+r ${OUTPATH}the_numbers_${current_block}.txt
+            chmod a+r ${OUTPATH}the_numbers_latest.txt
             # Capture height and total supply
-            rtnheight=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.height')
-            rtnamount=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.total_amount')
+            rtnheight=$(cat ${OUTPATH}the_numbers_latest.txt|jq -r '.height')
+            rtnamount=$(cat ${OUTPATH}the_numbers_latest.txt|jq -r '.total_amount')
             rtnbestblock=$(cat ${OUTPATH}the_numbers_latest.txt|jq -r '.bestblock')
-            rtntransactions=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.transactions')
+            rtntransactions=$(cat ${OUTPATH}the_numbers_latest.txt|jq -r '.transactions')
             rtntxouts=$(cat ${OUTPATH}the_numbers_latest.txt|jq '.txouts')
             # Assemble a message and log it
             rtnmessage=$(echo "Run The Numbers reports total BTC supply of ${rtnamount} as of block ${rtnheight}")
             logger "${rtnmessage}"
             # HTML output
             echo "<!DOCTYPE html>" > ${OUTPATH}the_numbers_latest.htm
-            echo "<html><head><title>Run the Numbers!</title></head><body style='font-family:ubuntu;font-weight:bold;font-style:italic;color:#4d4d4e'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<html><head><title>Run the Numbers!</title></head><body style='font-family:ubuntu,lucida,roboto,sans-serif,helvetica,arial;font-weight:bold;font-style:italic;color:#4d4d4e'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<center>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<h1>Run The Numbers last ran at block ${rtnheight}</h1>" >> ${OUTPATH}the_numbers_latest.htm
-            echo "<table style='width:800px;border:1px solid;font-family:ubuntu;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;background-color:#f2a900'>" >> ${OUTPATH}the_numbers_latest.htm
+            echo "<table style='width:800px;border:1px solid;font-family:ubuntu,lucida,roboto,sans-serif,helvetica,arial;font-weight:bold;font-style:italic;padding:10px;border-spacing:25px;background-color:#f2a900'>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The hash of the block up to which the UTXO is accurate'>Best Block</td><td>${rtnbestblock}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of transactions that have at least one non-spent output'>Transactions</td><td>${rtntransactions}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
             echo "<tr><td title='The number of unspent outputs'>TX Outs</td><td>${rtntxouts}</td></tr>" >> ${OUTPATH}the_numbers_latest.htm
@@ -65,6 +79,18 @@ do
             echo "</center>" >> ${OUTPATH}the_numbers_latest.htm
             echo "</body></html>" >> ${OUTPATH}the_numbers_latest.htm
             chmod a+r ${OUTPATH}the_numbers_latest.htm
+            cp ${OUTPATH}the_numbers_latest.htm ${OUTPATH}the_numbers_${current_block}.htm
+            chmod a+r ${OUTPATH}the_numbers_${current_block}.htm
+            # BLOCKCLOCK mini push
+            if [[ $BLOCKCLOCK -gt 0 ]]; then
+                curl -s ${bcmp} ${bcao}0/RUN/${rtnamount:0:4} || true
+                curl -s ${bcmp} ${bcao}1/THE/${rtnamount:4:5} || true
+                curl -s ${bcmp} ${bcao}2/NUMB/${rtnamount:9:4} || true
+                curl -s ${bcmp} ${bcao}3/ERS..../${rtnamount:13:4} || true
+                curl -s ${bcmp} ${bcai} || true
+                curl -s ${bcmp} ${bcao}5/....BLO/...${rtnheight:0:3} || true
+                curl -s ${bcmp} ${bcao}6/CK...../${rtnheight:3:3}... || true
+            fi
         fi
     fi
     # Query block height every n seconds

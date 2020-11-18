@@ -14,7 +14,7 @@ bcmp=""
 if [[ -n $BLOCKCLOCKPASSWORD ]]; then
     bcmp = " --digest -u :${BLOCKCLOCKPASSWORD} "
 fi
-bcai="http://${BLOCKCLOCKADDR}/api/image/4/register"
+bcai="http://${BLOCKCLOCKADDR}/api/image/4/honey"
 bcao="http://${BLOCKCLOCKADDR}/api/ou_text/"
 # Output path
 OUTPATH="/home/bitcoin/.runthenumbers/"

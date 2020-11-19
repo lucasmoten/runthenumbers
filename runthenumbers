@@ -45,6 +45,16 @@ do
     if [[ $mod_block -eq "0" ]]; then
         # Only one the numbers once per block
         if [[ $current_block -gt $last_run_block ]]; then
+            # BLOCKCLOCK mini push
+            if [[ $BLOCKCLOCK -gt 0 ]]; then
+                curl -s ${bcmp} ${bcao}0/RUNNI/ || true
+                curl -s ${bcmp} ${bcao}1/G.THE/ || true
+                curl -s ${bcmp} ${bcao}2/NUMB/ || true
+                curl -s ${bcmp} ${bcao}3/ERS..../ || true
+                curl -s ${bcmp} ${bcao}4/.FOR./ || true
+                curl -s ${bcmp} ${bcao}5/...${current_block:0:3}/ || true
+                curl -s ${bcmp} ${bcao}6/${current_block:3:3}.../ || true
+            fi
             # Run the numbers
             txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
             # Save results to files

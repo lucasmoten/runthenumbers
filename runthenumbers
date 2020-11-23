@@ -14,8 +14,11 @@ bcmp=""
 if [[ -n $BLOCKCLOCKPASSWORD ]]; then
     bcmp = " --digest -u :${BLOCKCLOCKPASSWORD} "
 fi
-bcai="http://${BLOCKCLOCKADDR}/api/image/4/honey"
-bcao="http://${BLOCKCLOCKADDR}/api/ou_text/"
+bcu="curl -s ${bcmp} http://${BLOCKCLOCKADDR}/api/"
+bcaa="${bcu}action/"
+bcai="${bcu}image/4/honey"
+bcao="${bcu}ou_text/"
+bcal="${bcu}lights/"
 # Output path
 OUTPATH="/home/bitcoin/.runthenumbers/"
 # Report to the output in journalctl
@@ -47,13 +50,15 @@ do
         if [[ $current_block -gt $last_run_block ]]; then
             # BLOCKCLOCK mini push
             if [[ $BLOCKCLOCK -gt 0 ]]; then
-                curl -s ${bcmp} ${bcao}0/RUNNI/ || true
-                curl -s ${bcmp} ${bcao}1/G.THE/ || true
-                curl -s ${bcmp} ${bcao}2/NUMB/ || true
-                curl -s ${bcmp} ${bcao}3/ERS..../ || true
-                curl -s ${bcmp} ${bcao}4/.FOR./ || true
-                curl -s ${bcmp} ${bcao}5/...${current_block:0:3}/ || true
-                curl -s ${bcmp} ${bcao}6/${current_block:3:3}.../ || true
+                ${bcaa}pause
+                ${bcal}flash || true
+                ${bcao}0/RUNNI/ || true
+                ${bcao}1/G.THE/ || true
+                ${bcao}2/NUMB/ || true
+                ${bcao}3/ERS..../ || true
+                ${bcao}4/.FOR./ || true
+                ${bcao}5/...${current_block:0:3}/ || true
+                ${bcao}6/${current_block:3:3}.../ || true
             fi
             # Run the numbers
             txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
@@ -113,13 +118,22 @@ do
             chmod a+r ${OUTPATH}the_numbers_${current_block}.htm
             # BLOCKCLOCK mini push
             if [[ $BLOCKCLOCK -gt 0 ]]; then
-                curl -s ${bcmp} ${bcao}0/RUN/${rtnamount:0:4} || true
-                curl -s ${bcmp} ${bcao}1/THE/${rtnamount:4:5} || true
-                curl -s ${bcmp} ${bcao}2/NUMB/${rtnamount:9:4} || true
-                curl -s ${bcmp} ${bcao}3/ERS..../${rtnamount:13:4} || true
-                curl -s ${bcmp} ${bcai} || true
-                curl -s ${bcmp} ${bcao}5/....BLO/...${rtnheight:0:3} || true
-                curl -s ${bcmp} ${bcao}6/CK...../${rtnheight:3:3}... || true
+                # flash
+                ${bcal}flash || true
+                # rainbow
+                ${bcal}f00 ; ${bcal}f60 ; ${bcal}ff0 ; ${bcal}0f0 ; ${bcal}00f
+                # results
+                ${bcao}0/RUN/${rtnamount:0:4} || true
+                ${bcao}1/THE/${rtnamount:4:5} || true
+                ${bcao}2/NUMB/${rtnamount:9:4} || true
+                ${bcao}3/ERS..../${rtnamount:13:4} || true
+                ${bcai} || true
+                ${bcao}5/....BLO/...${rtnheight:0:3} || true
+                ${bcao}6/CK...../${rtnheight:3:3}... || true
+                # lights out
+                ${bcal}off
+                # allow updates again
+                ${bcaa}update
             fi
             # Update last run block
             last_run_block=$current_block

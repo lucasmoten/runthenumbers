@@ -53,10 +53,10 @@ do
                 ${bcaa}pause
                 ${bcal}flash || true
                 ${bcao}0/RUNNI/ || true
-                ${bcao}1/G.THE/ || true
+                ${bcao}1/NG.THE/ || true
                 ${bcao}2/NUMB/ || true
                 ${bcao}3/ERS..../ || true
-                ${bcao}4/.FOR./ || true
+                ${bcao}4/FOR/ || true
                 ${bcao}5/...${current_block:0:3}/ || true
                 ${bcao}6/${current_block:3:3}.../ || true
             fi

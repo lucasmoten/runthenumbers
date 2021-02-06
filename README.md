@@ -57,6 +57,14 @@ Jump to Section
 
   Maybe you want this to run more often. Personally I go with every 5 blocks.
 
+  Next, set the output location where results should be saved.  The following is the default if also setting up for web server. If you change this, also update the web server root
+  ```ini
+  # Where results should be saved
+  OUTPATH="/home/bitcoin/.runthenumbers/"
+  ```
+
+  Next are configuration parameters for a Blockclock.
+
   ```ini
   BLOCKCLOCK=0
   BLOCKCLOCKADDR="21.21.21.21"
@@ -65,7 +73,7 @@ Jump to Section
 
   If you have a [blockclock mini](https://blockclockmini.com/) on your network, you can enable pushing results of running the numbers.
 
-  For the BLOCKCLOCK variable, a value of 1 will enable this feature.
+  For the BLOCKCLOCK variable, a value of 1 or higher will enable this feature.  This also acts as an "N'th" block for how often results should be sent to the blockclock.  I recommend a value of 5 or higher.
 
   Give the IP address of your blockclock mini for the BLOCKCLOCKADDR variable.
 
@@ -89,7 +97,7 @@ Jump to Section
 
   ```sh
   $ sudo su - bitcoin
-  $ mkdir /mnt/ext/runthenumbers
+  $ mkdir -p /mnt/ext/runthenumbers
   $ ln -s /mnt/ext/runthenumbers /home/bitcoin/.runthenumbers
   $ exit
   ```

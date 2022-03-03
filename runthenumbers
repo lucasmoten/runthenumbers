@@ -149,7 +149,7 @@ do
             # BLOCKCLOCK mini push announcing we are running!
             blockclock_start
             # Run the numbers
-            txoutsetinfo=$(bitcoin-cli gettxoutsetinfo)
+            txoutsetinfo=$(bitcoin-cli -rpcclienttimeout=0 gettxoutsetinfo)
             # Save results to files
             saveas_text
             # Capture height and total supply

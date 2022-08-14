@@ -39,6 +39,12 @@ Jump to Section
   $ cd runthenumbers
   ```
 
+* If you get a failure on the `git clone` line, try the following
+
+  ```sh
+  $ git clone https://github.com/lucasmoten/runthenumbers.git
+  ```
+
 ## Review and Configure Script
 
 * As usual, prior to running any script for the first time, you should review what it does
